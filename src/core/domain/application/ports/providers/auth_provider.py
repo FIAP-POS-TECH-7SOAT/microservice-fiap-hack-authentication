@@ -1,10 +1,12 @@
-import jwt
-from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from functools import wraps
-from flask import request, jsonify
-from models.results import TokenResult
 import hashlib
+
+from src.core.domain.application.ports.providers.dtos.token_result_dto import TokenResult
+
+import jwt
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import request, jsonify
 
 class AuthProvider:
     @staticmethod
@@ -20,7 +22,11 @@ class AuthProvider:
             'expiration': expiration.timestamp()
         }, secret, algorithm='HS256')
 
-        result = TokenResult(user_email, token, expiration)
+        result = TokenResult(
+            user=user_email, 
+            token=token, 
+            expiration=expiration
+        )
         return result
     
     @staticmethod
@@ -32,7 +38,11 @@ class AuthProvider:
             'expiration': expiration.timestamp()
         }, secret, algorithm='HS256')
 
-        result = TokenResult(user_email, token, expiration)
+        result = TokenResult(
+            user=user_email, 
+            token=token, 
+            expiration=expiration
+        )
         return result
 
     @staticmethod
