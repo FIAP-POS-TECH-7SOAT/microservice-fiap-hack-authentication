@@ -9,11 +9,11 @@ class VerifyTokenUseCase:
         self.auth_service = auth_service
         self.validator = TokenValidator()
 
-    def execute(self, token: TokenRequest) -> bool:
+    def execute(self, token: str) -> bool:
         """Executes the payment processing logic."""
-        try:
-            self.validator.load(token.__dict__)
-        except ValidationError as err:
-            raise ValueError(f"Invalid data: {err.messages}")
+        # try:
+        #     self.validator.load(token.__dict__)
+        # except ValidationError as err:
+        #     raise ValueError(f"Invalid data: {err.messages}")
         
         return self.auth_service.verify_token(token)

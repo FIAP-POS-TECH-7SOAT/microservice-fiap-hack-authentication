@@ -9,5 +9,5 @@ class User(db.Model):
     user_email = db.Column(db.String, unique=True)
     password = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=True)
-    registered_at = db.Column(db.Datetime, nullable=True, default=datetime.now())
-    active = db.Column(db.Bool, nullable=True, default=True)
+    registered_at = db.Column(db.DateTime, nullable=True, default=datetime.now())
+    active = db.Column(db.Boolean, nullable=True, default=True)

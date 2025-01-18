@@ -17,7 +17,8 @@ class UserService(IUserService):
             if user:
                 raise ValueError("User already exists")
             
-            hashed_password = bcrypt.hashpw(user_request.password.encode(), bcrypt.gensalt())
+            salt = bcrypt.gensalt()
+            hashed_password = bcrypt.hashpw(user_request.password.encode("utf-8"), salt).decode("utf-8")
             
             user = User(
                 user_email = user_request.user_email,
@@ -29,26 +30,6 @@ class UserService(IUserService):
             
             return True
         
-        except:
-            raise
-
-    def update_password(self, user_email: str, password:str, new_password:str)->bool:
-        """Update password from user - Need current password"""
-        try:
-            user = self.user_repository.get_user(user_email)
-            if not user:
-                raise ValueError("User does not exist")
-            
-            hashed_password = user.password
-            if not bcrypt.checkpw(password.encode(), hashed_password):
-                raise ValueError("Invalid credentials")
-            
-            new_hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
-            
-            self.user_repository.update_password(user_email, new_hashed_password)
-            
-            return True
-
         except:
             raise
         

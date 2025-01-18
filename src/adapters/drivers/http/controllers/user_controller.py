@@ -15,7 +15,7 @@ def user_bp(user_service: UserService):
             
             try:
                 user = CreateUserRequest(
-                    user_email = request.json['email'],
+                    user_email = request.json['user_email'],
                     password = request.json['password'],
                     phone = request.json['phone'],
                 )
@@ -35,3 +35,5 @@ def user_bp(user_service: UserService):
 
         except Exception as ex:
             return jsonify({'message': 'Unable to process request'}), 500
+        
+    return user_blueprint

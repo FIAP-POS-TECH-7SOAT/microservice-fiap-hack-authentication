@@ -16,6 +16,7 @@ class KeysRepository(IKeysRepository):
             self.db.session.commit()
             
         except SQLAlchemyError as e:
+            print(e)
             self.db.session.rollback()
             raise
 

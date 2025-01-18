@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request
 
-from src.core.domain.application.ports.providers.dtos.token_request_dto import TokenRequest
 from src.core.domain.application.use_cases.verify_token_use_case import VerifyTokenUseCase
 from src.core.domain.application.ports.providers.dtos.auth_user_dto import AuthUser
 from src.core.domain.application.use_cases.check_auth_use_case import CheckAuthUseCase
@@ -17,7 +16,7 @@ def auth_bp(auth_service: AuthService):
             
             try:
                 auth_user = AuthUser(
-                    user_email = request.json['email'],
+                    user_email = request.json['user_email'],
                     password = request.json['password'],
                 )
                 
@@ -32,8 +31,8 @@ def auth_bp(auth_service: AuthService):
                 else:
                     return jsonify({'message': 'Something went wrong'}), 401
 
-            except:
-                return jsonify({'message': 'Invalid data'}), 401
+            except Exception as ex:
+                return jsonify({'message': f'{ex}'}), 401
 
         except Exception as ex:
             return jsonify({'message': 'Unable to process request'}), 500
@@ -45,9 +44,7 @@ def auth_bp(auth_service: AuthService):
             verify_token_use_case = VerifyTokenUseCase(auth_service)
             
             try:
-                token = TokenRequest(
-                    token=request.json['token']
-                )
+                token = request.json['token']
                 
             except Exception as ex:
                 return jsonify({"error": f"Is missing: {str(ex)}"}), 404
@@ -60,8 +57,8 @@ def auth_bp(auth_service: AuthService):
                 else:
                     return jsonify({'message': 'Something went wrong'}), 401
 
-            except:
-                return jsonify({'message': 'Invalid data'}), 401
+            except Exception as ex:
+                return jsonify({'message': f'{ex}'}), 401
 
         except Exception as ex:
             return jsonify({'message': 'Unable to process request'}), 500

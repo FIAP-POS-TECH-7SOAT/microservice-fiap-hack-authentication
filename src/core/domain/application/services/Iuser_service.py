@@ -10,11 +10,6 @@ class IUserService(ABC):
         pass
     
     @abstractmethod
-    def update_password(self, user_email: str, password:str, new_password:str)->bool:
-        """Update password from user - Need current password"""
-        pass
-    
-    @abstractmethod
     def delete_user(self, user_email: str)->str:
         """Delete user"""
         pass
