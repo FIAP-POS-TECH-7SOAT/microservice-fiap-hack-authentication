@@ -1,60 +1,75 @@
+from datetime import datetime, timedelta
 
-from src.adapters.drivens.infra.repositories.token_repository import TokenRepository
-from src.adapters.drivens.infra.repositories.tracker_repository import TrackerRepository
+import bcrypt
+from jose import jwt
+
+from src.core.domain.application.services.keys_service import KeysService
+from src.core.domain.application.ports.providers.dtos.token_response import TokenResponse
+from src.core.domain.application.ports.providers.dtos.token_request_dto import TokenRequest
+from src.adapters.drivens.infra.repositories.keys_repository import KeysRepository
+from src.adapters.drivens.infra.repositories.user_repository import UserRepository
+from src.adapters.drivens.infra.settings.env import ENV
+from src.core.domain.application.ports.providers.dtos.user_request_dto import UserRequest
 from src.core.domain.application.services.Iauth_service import IAuthService
-from src.core.domain.models.tracker_model import TrackUserAccess
-from src.core.domain.models.token_model import Token
-
 class AuthService(IAuthService):
+    
     def __init__(self):
-        self.token_repository = TokenRepository()
-        self.tracker_repository = TrackerRepository()
-
-    def insert_refresh_token(self, token:Token):
-        """Insert a new token into database."""
+        self.user_repository = UserRepository()
+        self.keys_repository = KeysRepository()
+        self.keys_service = KeysService()
+        self.settings = ENV()
+        
+    def authenticate_user(self, user_credentials:UserRequest)->jwt.encode:
+        """Authenticate user and generate a JWT signed with the shared private key."""
         try:
-            self.token_repository.delete_token(token.user_id)
+            user = self.user_repository.get_user(user_credentials.user_email)
 
-            new_token = Token(
-                session_id=token.session_id,
-                user_id=token.user_id,
-                access_token=token.access_token,
-                refresh_token=token.refresh_token,
-                expires_at=token.expires_at
-            )
+            if not user:
+                raise ValueError("User does not exist")
             
-            track_access = TrackUserAccess(user_id=token.user_id)
-
-            self.token_repository.save_token(new_token)
-            self.tracker_repository.save_tracker(track_access)
+            hashed_password = user.password
+                
+            if not bcrypt.checkpw(user_credentials.password.encode(), str(hashed_password).encode()):
+                raise ValueError("Invalid credentials")
+            
+            private_key = self.settings.PRIVATE_KEY
+            
+            try:
+            
+                token = jwt.encode(
+                    {
+                        "sub": user.id,
+                        "user_email": user.user_email,
+                        "phone": user.phone,
+                        "exp": datetime.now() + timedelta(days=int(self.settings.EXP_DATE)),
+                        "iat": datetime.now(),
+                    },
+                    private_key,
+                    algorithm="RS256",
+                )
+            except Exception as ex:
+                print(ex)
+            
+            return token
         
-        except:
-            raise    
-
-    def get_refresh_token(self, user_email: str)->dict[str]|None:
-        """Get a new refreshed token in database"""
-        try:
-            token = self.token_repository.get_token_by_email(user_email)
-
-            if token:
-                return {
-                    'SESSION_ID': token.session_id,
-                    'ACCESS_TOKEN': token.access_token,
-                    'REFRESH_TOKEN': token.refresh_token,
-                    'EXPIRES_AT': token.expires_at
-                }
-            return None
-
-        except:
-            raise
-
-    def update_access_token_from_session_id(self, session_id: str, access_token: str):
-        """Update access token based on session"""
-        try:
-            token = self.token_repository.get_token_by_session(session_id)
-            if token:
-                token.access_token = access_token
-                self.token_repository.save_token(token)
+        except Exception as ex:
+            raise ValueError(str(ex))
         
-        except:
-            raise
+    
+    def verify_token(self, token:str)->TokenResponse:
+        """Verify the JWT using the shared public key."""
+        try:
+            public_key = self.settings.PUBLIC_KEY
+            try:
+                payload = jwt.decode(token, public_key, algorithms=["RS256"])
+            
+            except Exception as ex:
+                print(ex)
+                
+            return payload
+
+        except jwt.ExpiredSignatureError:
+            raise ValueError("Token has expired")
+        except jwt.InvalidTokenError:
+            raise ValueError("Invalid token")
+            

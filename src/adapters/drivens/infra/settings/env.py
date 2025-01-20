@@ -12,3 +12,6 @@ class ENV:
         self.CONNECT_STRING = os.getenv("CONNECT_STRING")
         self.PORT = os.getenv("PORT")
         self.SECRET_KEY_API = os.getenv("SECRET_KEY_API")
+        self.EXP_DATE = os.getenv("EXP_DATE")
+        self.PRIVATE_KEY = os.getenv("PRIVATE_KEY")
+        self.PUBLIC_KEY = os.getenv("PUBLIC_KEY")
