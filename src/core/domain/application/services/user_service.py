@@ -1,6 +1,7 @@
 import bcrypt
 
-from src.core.domain.application.ports.providers.dtos.create_user_request_dto import CreateUserRequest
+
+from src.adapters.drivers.http.dtos.create_user_request_dto import CreateUserRequest
 from src.adapters.drivens.infra.repositories.user_repository import UserRepository
 from src.core.domain.application.services.Iuser_service import IUserService
 from src.core.domain.models.user_model import User
@@ -30,8 +31,8 @@ class UserService(IUserService):
             
             return True
         
-        except:
-            raise
+        except Exception as err:
+            raise ValueError(f"Invalid data: {err}")
         
     def delete_user(self, user_email: str)->str:
         """Delete user"""

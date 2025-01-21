@@ -8,7 +8,7 @@ class CreateUserRequestValidator(Schema):
     phone = fields.Str(required=False)
 
     @validates("user_email")
-    def validate_email(self, email):
-        obj = re.search(r'[\w.]+\@[\w.]+', email)
+    def validate_email(self, user_email):
+        obj = re.search(r'[\w.]+\@[\w.]+', user_email)
         if not obj:
             raise ValidationError("Invalid Email")

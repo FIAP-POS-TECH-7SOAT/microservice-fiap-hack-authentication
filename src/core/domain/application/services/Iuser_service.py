@@ -1,7 +1,9 @@
 
 from abc import ABC, abstractmethod
 
-from src.core.domain.application.ports.providers.dtos.create_user_request_dto import CreateUserRequest
+from src.adapters.drivers.http.dtos.create_user_request_dto import CreateUserRequest
+
+
 
 class IUserService(ABC):
     @abstractmethod
