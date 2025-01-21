@@ -1,5 +1,5 @@
+from src.adapters.drivers.http.dtos.create_user_request_dto import CreateUserRequest
 from src.core.domain.application.services.user_service import UserService
-from src.core.domain.application.ports.providers.dtos.create_user_request_dto import CreateUserRequest
 from src.core.domain.validators.create_user_request_validator import CreateUserRequestValidator
 
 from marshmallow import ValidationError

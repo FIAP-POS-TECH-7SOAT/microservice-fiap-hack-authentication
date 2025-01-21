@@ -3,20 +3,16 @@ from datetime import datetime, timedelta
 import bcrypt
 from jose import jwt
 
-from src.core.domain.application.services.keys_service import KeysService
-from src.core.domain.application.ports.providers.dtos.token_response import TokenResponse
-from src.core.domain.application.ports.providers.dtos.token_request_dto import TokenRequest
-from src.adapters.drivens.infra.repositories.keys_repository import KeysRepository
+from src.adapters.drivers.http.dtos.token_request_dto import TokenRequest
+from src.adapters.drivers.http.dtos.token_response import TokenResponse
+from src.adapters.drivers.http.dtos.user_request_dto import UserRequest
 from src.adapters.drivens.infra.repositories.user_repository import UserRepository
 from src.adapters.drivens.infra.settings.env import ENV
-from src.core.domain.application.ports.providers.dtos.user_request_dto import UserRequest
 from src.core.domain.application.services.Iauth_service import IAuthService
 class AuthService(IAuthService):
     
     def __init__(self):
         self.user_repository = UserRepository()
-        self.keys_repository = KeysRepository()
-        self.keys_service = KeysService()
         self.settings = ENV()
         
     def authenticate_user(self, user_credentials:UserRequest)->jwt.encode:
@@ -32,10 +28,7 @@ class AuthService(IAuthService):
             if not bcrypt.checkpw(user_credentials.password.encode(), str(hashed_password).encode()):
                 raise ValueError("Invalid credentials")
             
-            private_key = self.settings.PRIVATE_KEY
-            
             try:
-            
                 token = jwt.encode(
                     {
                         "sub": user.id,
@@ -44,11 +37,11 @@ class AuthService(IAuthService):
                         "exp": datetime.now() + timedelta(days=int(self.settings.EXP_DATE)),
                         "iat": datetime.now(),
                     },
-                    private_key,
+                    self.settings.PRIVATE_KEY,
                     algorithm="RS256",
                 )
             except Exception as ex:
-                print(ex)
+                raise ValueError(str(ex))
             
             return token
         
@@ -56,20 +49,14 @@ class AuthService(IAuthService):
             raise ValueError(str(ex))
         
     
-    def verify_token(self, token:str)->TokenResponse:
+    def verify_token(self, token:TokenRequest)->TokenResponse:
         """Verify the JWT using the shared public key."""
         try:
-            public_key = self.settings.PUBLIC_KEY
-            try:
-                payload = jwt.decode(token, public_key, algorithms=["RS256"])
-            
-            except Exception as ex:
-                print(ex)
-                
+            payload = jwt.decode(token.token, self.settings.PUBLIC_KEY, algorithms=["RS256"])
+        
             return payload
-
-        except jwt.ExpiredSignatureError:
-            raise ValueError("Token has expired")
-        except jwt.InvalidTokenError:
-            raise ValueError("Invalid token")
+            
+        except Exception as ex:
+            raise ValueError(str(ex))
+                
             

@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 
+from src.adapters.drivers.http.dtos.token_request_dto import TokenRequest
+from src.adapters.drivers.http.dtos.auth_user_dto import AuthUser
 from src.core.domain.application.use_cases.verify_token_use_case import VerifyTokenUseCase
-from src.core.domain.application.ports.providers.dtos.auth_user_dto import AuthUser
 from src.core.domain.application.use_cases.check_auth_use_case import CheckAuthUseCase
 from src.core.domain.application.services.auth_service import AuthService
 
@@ -44,7 +45,9 @@ def auth_bp(auth_service: AuthService):
             verify_token_use_case = VerifyTokenUseCase(auth_service)
             
             try:
-                token = request.json['token']
+                token = TokenRequest(
+                    token = request.json['token'],
+                )
                 
             except Exception as ex:
                 return jsonify({"error": f"Is missing: {str(ex)}"}), 404

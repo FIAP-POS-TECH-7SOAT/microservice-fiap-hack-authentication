@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 
-from src.core.domain.application.ports.providers.dtos.token_response import TokenResponse
-from src.core.domain.application.ports.providers.dtos.token_request_dto import TokenRequest
-from src.core.domain.application.ports.providers.dtos.user_request_dto import UserRequest
+from src.adapters.drivers.http.dtos.token_response import TokenResponse
+from src.adapters.drivers.http.dtos.user_request_dto import UserRequest
+
+
 class IAuthService(ABC):
     
     @abstractmethod
