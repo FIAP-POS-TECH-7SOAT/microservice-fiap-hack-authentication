@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime, timedelta
 
 import bcrypt
@@ -24,6 +25,8 @@ class AuthService(IAuthService):
                 raise ValueError("User does not exist")
             
             hashed_password = user.password
+
+            private_key = base64.b64decode(self.settings.PRIVATE_KEY).decode('utf-8')
                 
             if not bcrypt.checkpw(user_credentials.password.encode(), str(hashed_password).encode()):
                 raise ValueError("Invalid credentials")
@@ -37,7 +40,7 @@ class AuthService(IAuthService):
                         "exp": datetime.now() + timedelta(days=int(self.settings.EXP_DATE)),
                         "iat": datetime.now(),
                     },
-                    self.settings.PRIVATE_KEY,
+                    private_key,
                     algorithm="RS256",
                 )
             except Exception as ex:
@@ -52,7 +55,9 @@ class AuthService(IAuthService):
     def verify_token(self, token:TokenRequest)->TokenResponse:
         """Verify the JWT using the shared public key."""
         try:
-            payload = jwt.decode(token.token, self.settings.PUBLIC_KEY, algorithms=["RS256"])
+            public_key = base64.b64decode(self.settings.PUBLIC_KEY).decode('utf-8')
+
+            payload = jwt.decode(token.token, public_key, algorithms=["RS256"])
         
             return payload
             
