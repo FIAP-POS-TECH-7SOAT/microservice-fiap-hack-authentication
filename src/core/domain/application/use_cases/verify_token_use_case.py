@@ -9,7 +9,7 @@ class VerifyTokenUseCase:
         self.auth_service = auth_service
         self.validator = TokenValidator()
 
-    def execute(self, token: TokenRequest) -> bool:
+    def execute(self, token: TokenRequest) -> dict:
         """Executes the payment processing logic."""
         try:
             self.validator.load(token.__dict__)

@@ -10,7 +10,7 @@ class CheckAuthUseCase:
         self.auth_service = auth_service
         self.validator = CheckAuthRequestValidator()
 
-    def execute(self, user_credentials: AuthUser) -> bool:
+    def execute(self, user_credentials: AuthUser) -> str:
         """Executes the payment processing logic."""
         try:
             self.validator.load(user_credentials.__dict__)

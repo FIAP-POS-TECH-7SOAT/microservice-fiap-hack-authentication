@@ -1,5 +1,6 @@
 from flask import Flask
 
+from src.adapters.drivers.http.controllers.health_controller import health_bp
 from src.adapters.drivers.http.controllers.auth_controller import auth_bp
 from src.adapters.drivers.http.controllers.user_controller import user_bp
 from src.adapters.drivens.infra.settings.env import ENV
@@ -18,6 +19,7 @@ user_service = UserService()
 
 app.register_blueprint(auth_bp(auth_service))
 app.register_blueprint(user_bp(user_service))
+app.register_blueprint(health_bp())
 
 if __name__ == "__main__":
     try:
