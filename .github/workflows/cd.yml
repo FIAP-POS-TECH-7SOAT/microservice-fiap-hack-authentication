@@ -24,42 +24,42 @@ jobs:
           pip install -r requirements.txt
         working-directory: .
 
-      # - name: Run unit tests with coverage
-      #   run: |
-      #     pip install pytest pytest-cov
-      #     pytest --cov-report term --cov-report xml:coverage.xml --cov=src
-      #   working-directory: .
+      - name: Run unit tests with coverage
+        run: |
+          pip install pytest pytest-cov
+          pytest --cov-report term --cov-report xml:coverage.xml --cov=src
+        working-directory: .
 
-      # - name: Start server
-      #   run: |
-      #     python server.py & # Replace with your server startup command
-      #     sleep 5 # Give the server time to start
-      #   env:
-      #     CONNECT_STRING: ${{ secrets.CONNECT_STRING }}
-      #     PORT: ${{ secrets.PORT }}
-      #     EXP_DATE: ${{ secrets.EXP_DATE }}
-      #     PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-      #     PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
+      - name: Start server
+        run: |
+          python server.py & # Replace with your server startup command
+          sleep 5 # Give the server time to start
+        env:
+          CONNECT_STRING: ${{ secrets.CONNECT_STRING }}
+          PORT: ${{ secrets.PORT }}
+          EXP_DATE: ${{ secrets.EXP_DATE }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
 
-      # - name: Run BDD tests
-      #   run: |
-      #     behave tests/features
+      - name: Run BDD tests
+        run: |
+          behave tests/bdd/features/create_user.feature && behave tests/bdd/features/auth_check.feature && behave tests/bdd/features/auth_verify.feature
 
-      # - name: Verify coverage report exists
-      #   run: |
-      #     if [ -f coverage.xml ]; then
-      #       echo "Coverage file found at $(pwd)/coverage.xml"
-      #     else
-      #       echo "Coverage file not found!" >&2
-      #       exit 1
-      #     fi
-      #   working-directory: .
+      - name: Verify coverage report exists
+        run: |
+          if [ -f coverage.xml ]; then
+            echo "Coverage file found at $(pwd)/coverage.xml"
+          else
+            echo "Coverage file not found!" >&2
+            exit 1
+          fi
+        working-directory: .
 
-      # - name: SonarCloud Scan
-      #   uses: SonarSource/sonarcloud-github-action@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Build Docker Image
         run: |

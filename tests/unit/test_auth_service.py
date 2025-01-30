@@ -63,7 +63,7 @@ class TestAuthService(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             self.auth_service.authenticate_user(user_request)
 
-        self.assertEqual(str(context.exception), "Invalid credentials")
+        self.assertEqual(str(context.exception), "Invalid password")
 
     def test_verify_token_success(self):
         payload = {
