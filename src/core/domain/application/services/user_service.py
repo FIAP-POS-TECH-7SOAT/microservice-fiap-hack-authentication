@@ -12,6 +12,33 @@ class UserService(IUserService):
         
         self.logger.info(f"UserService :: Constructor :: Declaring UserRepository")
         self.user_repository = UserRepository()
+        
+    def get_user_by_email(self, user_email: str)->User:
+        """Get user by email"""
+        return self.user_repository.get_user(user_email)
+    
+    def update_password(self, user_email: str, new_password: str)->bool:
+        """Update password based on token and update it with a new password"""
+        try:
+            self.logger.info(f"UserService :: update_password :: Getting user by email {user_email}")
+            user = self.get_user_by_email(user_email)
+            if not user:
+                self.logger.info(f"UserService :: update_password :: User {user_email} not found")
+                raise ValueError("User not found")
+            
+            self.logger.info(f"UserService :: update_password :: Generating salt")
+            salt = bcrypt.gensalt()
+            
+            self.logger.info(f"UserService :: update_password :: Hashing password")
+            user.password = bcrypt.hashpw(new_password.encode("utf-8"), salt).decode("utf-8")
+            
+            self.logger.info(f"UserService :: update_password :: Saving into Database")
+            self.user_repository.update_password(user.user_email, user.password)
+            return True
+        
+        except Exception as ex:
+            self.logger.error(f"UserService :: update_password :: Error {ex}")
+            return False
 
     def register_user(self, user_request:CreateUserRequest)->bool:
         """Register a new user with a hashed password."""

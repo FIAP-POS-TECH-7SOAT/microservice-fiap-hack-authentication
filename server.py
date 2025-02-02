@@ -34,6 +34,8 @@ logger.info("Server :: main :: Settings routes")
 app.register_blueprint(auth_bp(auth_service))
 app.register_blueprint(user_bp(user_service))
 app.register_blueprint(health_bp())
+# from src.adapters.drivers.http.controllers.password_controller import password_recovery_bp
+# app.register_blueprint(password_recovery_bp())
 
 if __name__ == "__main__":
     try:
