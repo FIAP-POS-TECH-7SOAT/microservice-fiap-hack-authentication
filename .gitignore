@@ -8,6 +8,7 @@ __pycache__/
 
 teste.py
 instance/
+map_tests.zip
 private_key.pem
 public_key.pem
 

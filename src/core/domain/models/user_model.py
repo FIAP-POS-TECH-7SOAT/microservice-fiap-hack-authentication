@@ -11,3 +11,4 @@ class User(db.Model):
     phone = db.Column(db.String, nullable=True)
     registered_at = db.Column(db.DateTime, nullable=True, default=datetime.now())
     active = db.Column(db.Boolean, nullable=True, default=True)
+    email_verified = db.Column(db.Boolean, default=False)
