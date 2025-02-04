@@ -1,7 +1,7 @@
 
 from abc import ABC, abstractmethod
 
-from core.domain.models.user_model import User
+from src.core.domain.models.user_model import User
 from src.adapters.drivers.http.dtos.create_user_request_dto import CreateUserRequest
 
 

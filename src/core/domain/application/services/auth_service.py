@@ -32,6 +32,10 @@ class AuthService(IAuthService):
                 self.logger.error(f"AuthService :: authenticate_user :: User does not exist")
                 raise ValueError("User does not exist")
             
+            if not user.email_verified:
+                self.logger.error(f"AuthService :: authenticate_user :: User is not verified")
+                raise ValueError(" User is not verified")
+            
             hashed_password = user.password
 
             self.logger.info(f"AuthService :: authenticate_user :: Decode base64 Private Key")

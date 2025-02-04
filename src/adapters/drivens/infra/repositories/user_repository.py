@@ -51,3 +51,13 @@ class UserRepository(IUserRepository):
             self.logger.error(f"UserRepository :: update_password :: Error {e}")
             self.db.session.rollback()
             raise
+        
+    def update_verification(self, user:User):
+        try:
+            user.email_verified = True
+            self.db.session.commit()
+
+        except SQLAlchemyError as e:
+            self.logger.error(f"UserRepository :: update_password :: Error {e}")
+            self.db.session.rollback()
+            raise
