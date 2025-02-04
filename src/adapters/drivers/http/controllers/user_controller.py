@@ -71,9 +71,6 @@ def user_bp(user_service: UserService):
     @user_blueprint.route("/user/verify/<token>", methods=["GET"])
     def verify_email(token):
         try:
-            logger.info(f"UserController :: verify_email :: Getting token from url")
-            token = ""
-            
             logger.info(f"UserController :: verify_email :: Getting user email")
             user_email = serializer.loads(token, salt=env.SALT_KEY, max_age=3600)
             
@@ -85,7 +82,6 @@ def user_bp(user_service: UserService):
                 return jsonify({"message": "User not found"}), 404
             
             logger.info(f"UserController :: verify_email :: User verify")
-            user.email_verified = True
             user_service.user_verify(user)
 
             logger.info(f"UserController :: verify_email :: User verified")

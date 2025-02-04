@@ -13,6 +13,14 @@ class UserService(IUserService):
         self.logger.info(f"UserService :: Constructor :: Declaring UserRepository")
         self.user_repository = UserRepository()
         
+    def user_verify(self, user:User)->bool:
+        try:
+            self.logger.info(f"UserService :: user_verify :: Verifying user {user.user_email}")
+            self.user_repository.update_verification(user)
+        
+        except Exception as ex:
+            self.logger.error(f"UserService :: user_verify :: Error {ex}")
+        
     def get_user_by_email(self, user_email: str)->User:
         """Get user by email"""
         return self.user_repository.get_user(user_email)

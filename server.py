@@ -3,6 +3,7 @@ from flask import Flask
 from src.adapters.drivers.http.controllers.health_controller import health_bp
 from src.adapters.drivers.http.controllers.auth_controller import auth_bp
 from src.adapters.drivers.http.controllers.user_controller import user_bp
+from src.adapters.drivers.http.controllers.password_controller import password_recovery_bp
 from src.adapters.drivens.infra.settings.env import ENV
 from src.adapters.drivens.infra.database.config import db
 from src.core.domain.application.services.user_service import UserService
@@ -34,8 +35,7 @@ logger.info("Server :: main :: Settings routes")
 app.register_blueprint(auth_bp(auth_service))
 app.register_blueprint(user_bp(user_service))
 app.register_blueprint(health_bp())
-# from src.adapters.drivers.http.controllers.password_controller import password_recovery_bp
-# app.register_blueprint(password_recovery_bp())
+app.register_blueprint(password_recovery_bp(user_service, env.SALT_KEY))
 
 if __name__ == "__main__":
     try:
