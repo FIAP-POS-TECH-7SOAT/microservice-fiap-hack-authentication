@@ -16,3 +16,4 @@ class ENV:
         self.EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
         self.EMAIL_USER = os.getenv("EMAIL_USER")
         self.EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+        self.EMAIL_FROM = os.getenv("EMAIL_FROM")

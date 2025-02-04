@@ -12,7 +12,7 @@ class LoggerFactory:
         except:pass
 
         logging.basicConfig(
-            filename = f"logs\\LOG_{current_day}.log", 
+            filename = f"logs/LOG_{current_day}.log", 
             level = logging.INFO, 
             format = '%(asctime)s - %(levelname)s - %(message)s',
             encoding='UTF-8'

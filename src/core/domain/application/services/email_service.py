@@ -1,4 +1,5 @@
 import smtplib
+from email.message import EmailMessage
 
 from src.shared.logger import LoggerFactory
 from src.core.domain.application.services.Iemail_service import IMailSend
@@ -33,14 +34,18 @@ class MailSend(IMailSend):
             
     def send_email(self, to_email:str, subject_mail:str, body:str):
         """Send email"""
-        subject = subject_mail
-        message = body
         try:
             self.logger.info("MailSend :: send_email :: Login on server")
             server = self.login_server()
-            
+
+            msg = EmailMessage()
+            msg["Subject"] = subject_mail
+            msg["From"] = self.env.EMAIL_FROM
+            msg["To"] = to_email
+            msg.set_content(body)
+
             self.logger.info("MailSend :: send_email :: Sending email")
-            server.sendmail(self.smtp_user, to_email, f"Subject: {subject}\n\n{message}")
+            server.send_message(msg)
             
             self.logger.info("MailSend :: send_email :: Shutingdown server")
             server.quit()

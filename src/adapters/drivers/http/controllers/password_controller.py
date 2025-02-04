@@ -39,7 +39,7 @@ def password_recovery_bp(user_service: UserService, secret_key: str):
             logger.info(f"PasswordController :: recover_password :: Sending Email")
             sender.send_email(user_email, "Recuperação de Senha", body)
 
-            return jsonify({"message": "Recovery email sent", "recovery_url": recovery_url}), 200
+            return jsonify({"message": "Recovery email sent"}), 200
 
         except Exception as ex:
             logger.error(f"PasswordController :: recover_password :: Error Unable to process request - {ex}")
@@ -55,8 +55,9 @@ def password_recovery_bp(user_service: UserService, secret_key: str):
                 return jsonify({"error": "New password is required"}), 400
 
             try:
-                logger.info(f"PasswordController :: reset_password :: Verifying token to get user_email {user_email}")
-                user_email = serializer.loads(token, salt=env.SALT_KEY, max_age=3600)
+                logger.info(f"PasswordController :: reset_password :: Verifying token to get user_email")
+                user_email:str = serializer.loads(token, salt=env.SALT_KEY, max_age=3600)
+
             except Exception:
                 logger.error(f"PasswordController :: reset_password :: Invalid or expired token")
                 return jsonify({"error": "Invalid or expired token"}), 400
@@ -68,7 +69,7 @@ def password_recovery_bp(user_service: UserService, secret_key: str):
                 return jsonify({"error": "User not found"}), 404
 
             logger.info(f"PasswordController :: reset_password :: Updating password from user {user_email}")
-            user_service.update_password(user.id, new_password)
+            user_service.update_password(user.user_email, new_password)
             return jsonify({"message": "Password reset successful"}), 200
 
         except Exception as ex:
