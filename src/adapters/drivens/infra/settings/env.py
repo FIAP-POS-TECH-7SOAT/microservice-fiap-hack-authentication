@@ -17,3 +17,4 @@ class ENV:
         self.EMAIL_USER = os.getenv("EMAIL_USER")
         self.EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
         self.EMAIL_FROM = os.getenv("EMAIL_FROM")
+        self.EXP_SERIALIZER = int(os.getenv("EXP_SERIALIZER"))

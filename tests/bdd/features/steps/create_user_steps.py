@@ -1,4 +1,3 @@
-import requests
 from behave import given, when, then
 from hamcrest import assert_that, equal_to
 

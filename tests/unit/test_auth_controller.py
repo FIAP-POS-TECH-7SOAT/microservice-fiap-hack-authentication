@@ -12,7 +12,7 @@ class TestAuthController(unittest.TestCase):
         self.app.register_blueprint(auth_bp(self.mock_auth_service))
         self.client = self.app.test_client()
         
-    def test_check_auth(self):
+    def test_check_auth_success(self):
         payload = {
             "user_email": "test_user@gmail.com",
             "password": "plain_password"
@@ -27,7 +27,22 @@ class TestAuthController(unittest.TestCase):
         self.assertIn("token", data)
         self.assertEqual(data["token"], "fake_token")
         
-    def test_auth_verify(self):
+    def test_check_auth_failure(self):
+        payload = {
+            "user_email": "test_user@gmail.com",
+            "password": "plain_password"
+        }
+        
+        self.mock_auth_service.authenticate_user.return_value = False
+        
+        response = self.client.post('/auth/check', json=payload)
+        
+        self.assertEqual(response.status_code, 401)
+        data = response.get_json()
+        self.assertIn("message", data)
+        self.assertEqual(data["message"], "Something went wrong")
+        
+    def test_auth_verify_success(self):
         payload = {"token": "fake_token"}
         
         self.mock_auth_service.verify_token.return_value = {
@@ -53,3 +68,15 @@ class TestAuthController(unittest.TestCase):
         self.assertEqual(data['payload']["phone"], "+551112347896")
         self.assertEqual(data['payload']["exp"], "2022-12-31T00:00:00")
         self.assertEqual(data['payload']["iat"], "2021-12-31T00:00:00")
+        
+    def test_auth_verify_failure(self):
+        payload = {"token": "fake_token"}
+        
+        self.mock_auth_service.verify_token.return_value = False
+        
+        response = self.client.post('/auth/verify', json=payload)
+        
+        self.assertEqual(response.status_code, 401)
+        data = response.get_json()
+        self.assertIn("message", data)
+        self.assertEqual(data["message"], "Something went wrong")

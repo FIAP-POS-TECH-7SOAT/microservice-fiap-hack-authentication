@@ -56,7 +56,7 @@ def password_recovery_bp(user_service: UserService, secret_key: str):
 
             try:
                 logger.info(f"PasswordController :: reset_password :: Verifying token to get user_email")
-                user_email:str = serializer.loads(token, salt=env.SALT_KEY, max_age=3600)
+                user_email:str = serializer.loads(token, salt=env.SALT_KEY, max_age=env.EXP_SERIALIZER)
 
             except Exception:
                 logger.error(f"PasswordController :: reset_password :: Invalid or expired token")
@@ -69,8 +69,10 @@ def password_recovery_bp(user_service: UserService, secret_key: str):
                 return jsonify({"error": "User not found"}), 404
 
             logger.info(f"PasswordController :: reset_password :: Updating password from user {user_email}")
-            user_service.update_password(user.user_email, new_password)
-            return jsonify({"message": "Password reset successful"}), 200
+            if user_service.update_password(user.user_email, new_password):
+                return jsonify({"message": "Password reset successful"}), 200
+            else:
+                return jsonify({"error": "Password not reseted"}), 404
 
         except Exception as ex:
             return jsonify({"error": f"Unable to process request: {str(ex)}"}), 500
