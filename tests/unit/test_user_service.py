@@ -102,3 +102,47 @@ class TestUserService(unittest.TestCase):
             self.user_service.delete_user("test_user@gmail.com")
 
         self.mock_user_repository.delete_user.assert_called_once_with("test_user@gmail.com")
+        
+    def test_user_verify_success(self):
+        user = User(user_email="test_user@gmail.com", password="hashed_password", phone="+551112347896")
+        
+        self.user_service.user_verify(user)
+        self.mock_user_repository.update_verification.assert_called_once_with(user)
+    
+    def test_get_user_by_email_success(self):
+        user = User(user_email="test_user@gmail.com", password="hashed_password", phone="+551112347896")
+        self.mock_user_repository.get_user.return_value = user
+
+        result = self.user_service.get_user_by_email("test_user@gmail.com")
+        self.assertEqual(result, user)
+        self.mock_user_repository.get_user.assert_called_once_with("test_user@gmail.com")
+    
+    def test_get_user_by_email_not_found(self):
+        self.mock_user_repository.get_user.return_value = None
+
+        result = self.user_service.get_user_by_email("nonexistent@gmail.com")
+        self.assertIsNone(result)
+        self.mock_user_repository.get_user.assert_called_once_with("nonexistent@gmail.com")
+    
+    def test_update_password_success(self):
+        user = User(user_email="test_user@gmail.com", password="old_password", phone="+551112347896")
+        self.mock_user_repository.get_user.return_value = user
+        
+        with patch("bcrypt.gensalt") as mock_gensalt, patch("bcrypt.hashpw") as mock_hashpw:
+            mock_gensalt.return_value = b"salt"
+            mock_hashpw.return_value = b"new_hashed_password"
+            
+            result = self.user_service.update_password("test_user@gmail.com", "new_password")
+            self.assertTrue(result)
+            self.mock_user_repository.update_password.assert_called_once_with("test_user@gmail.com", "new_hashed_password")
+    
+    def test_update_password_failure(self):
+        user = User(user_email="test_user@gmail.com", password="old_password", phone="+551112347896")
+        self.mock_user_repository.get_user.return_value = user
+        self.mock_user_repository.update_password.side_effect = Exception("Database error")
+        
+        with patch("bcrypt.gensalt"), patch("bcrypt.hashpw"):
+            result = self.user_service.update_password("test_user@gmail.com", "new_password")
+        
+        self.assertFalse(result)
+        self.mock_user_repository.update_password.assert_called_once()
