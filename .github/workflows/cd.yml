@@ -47,6 +47,7 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EXP_SERIALIZER: ${{ secrets.EXP_SERIALIZER }}
 
       - name: Run BDD tests
         run: |
