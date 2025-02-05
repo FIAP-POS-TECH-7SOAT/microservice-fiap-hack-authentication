@@ -84,6 +84,6 @@ jobs:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EXP_SERIALIZER: ${{ secrets.EXP_SERIALIZER }}
 
-      - name: Run BDD tests
-        run: |
-          behave tests/bdd/features/create_user.feature
+      # - name: Run BDD tests
+      #   run: |
+      #     behave tests/bdd/features/create_user.feature

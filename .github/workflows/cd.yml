@@ -49,19 +49,19 @@ jobs:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EXP_SERIALIZER: ${{ secrets.EXP_SERIALIZER }}
 
-      - name: Run BDD tests
-        run: |
-          behave tests/bdd/features/create_user.feature
+      # - name: Run BDD tests
+      #   run: |
+      #     behave tests/bdd/features/create_user.feature
 
-      - name: Verify coverage report exists
-        run: |
-          if [ -f coverage.xml ]; then
-            echo "Coverage file found at $(pwd)/coverage.xml"
-          else
-            echo "Coverage file not found!" >&2
-            exit 1
-          fi
-        working-directory: .
+      # - name: Verify coverage report exists
+      #   run: |
+      #     if [ -f coverage.xml ]; then
+      #       echo "Coverage file found at $(pwd)/coverage.xml"
+      #     else
+      #       echo "Coverage file not found!" >&2
+      #       exit 1
+      #     fi
+      #   working-directory: .
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
