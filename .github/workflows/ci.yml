@@ -86,4 +86,4 @@ jobs:
 
       # - name: Run BDD tests
       #   run: |
-      #     behave tests/bdd/features/create_user.feature
+      #     pytest tests/bdd/test_create_user.py && pytest tests/bdd/test_verify_email.py && pytest tests/bdd/test_auth_user.py && pytest tests/bdd/test_auth_verify.py && pytest tests/bdd/test_password_recover.py && pytest tests/bdd/test_password_reset.py
