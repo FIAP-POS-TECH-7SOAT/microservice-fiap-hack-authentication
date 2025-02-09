@@ -27,7 +27,7 @@ jobs:
       - name: Run unit tests with coverage
         run: |
           pip install pytest pytest-cov
-          pytest --cov-report term --cov-report xml:coverage.xml --cov=src
+          pytest --cov-report term --cov-report xml:coverage.xml --cov=src tests/unit
         working-directory: .
         env:
           CONNECT_STRING: "sqlite:///:memory:"
