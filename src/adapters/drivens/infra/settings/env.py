@@ -13,8 +13,8 @@ class ENV:
         self.BASE_URL = os.getenv("BASE_URL")
         self.SALT_KEY = os.getenv("SALT_KEY")
         self.EMAIL_HOST = os.getenv("EMAIL_HOST")
-        self.EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
+        self.EMAIL_PORT = int(os.getenv("EMAIL_PORT")) if os.getenv("EMAIL_PORT") else 587
         self.EMAIL_USER = os.getenv("EMAIL_USER")
         self.EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
         self.EMAIL_FROM = os.getenv("EMAIL_FROM")
-        self.EXP_SERIALIZER = int(os.getenv("EXP_SERIALIZER"))
+        self.EXP_SERIALIZER = int(os.getenv("EXP_SERIALIZER")) if os.getenv("EXP_SERIALIZER") else 86000
