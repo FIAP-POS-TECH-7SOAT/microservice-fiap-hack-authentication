@@ -47,7 +47,7 @@ jobs:
       - name: Start server
         run: |
           python server.py & # Replace with your server startup command
-          sleep 5 # Give the server time to start
+          sleep 5
         env:
           CONNECT_STRING: "sqlite:///:memory:"
           PORT: ${{ secrets.PORT }}
@@ -63,9 +63,9 @@ jobs:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EXP_SERIALIZER: ${{ secrets.EXP_SERIALIZER }}
 
-      # - name: Run BDD tests
-      #   run: |
-      #     pytest tests/bdd/test_create_user.py && pytest tests/bdd/test_verify_email.py && pytest tests/bdd/test_auth_user.py && pytest tests/bdd/test_auth_verify.py && pytest tests/bdd/test_password_recover.py && pytest tests/bdd/test_password_reset.py
+      - name: Run BDD tests
+        run: |
+          pytest tests/bdd/test_create_user.py && pytest tests/bdd/test_verify_email.py && pytest tests/bdd/test_auth_user.py && pytest tests/bdd/test_auth_verify.py && pytest tests/bdd/test_password_recover.py && pytest tests/bdd/test_password_reset.py
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

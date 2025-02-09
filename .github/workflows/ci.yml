@@ -57,7 +57,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt behave
+          pip install -r requirements.txt
         working-directory: .
 
       - name: Start server
@@ -84,6 +84,6 @@ jobs:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EXP_SERIALIZER: ${{ secrets.EXP_SERIALIZER }}
 
-      # - name: Run BDD tests
-      #   run: |
-      #     pytest tests/bdd/test_create_user.py && pytest tests/bdd/test_verify_email.py && pytest tests/bdd/test_auth_user.py && pytest tests/bdd/test_auth_verify.py && pytest tests/bdd/test_password_recover.py && pytest tests/bdd/test_password_reset.py
+      - name: Run BDD tests
+        run: |
+          pytest tests/bdd/test_create_user.py && pytest tests/bdd/test_verify_email.py && pytest tests/bdd/test_auth_user.py && pytest tests/bdd/test_auth_verify.py && pytest tests/bdd/test_password_recover.py && pytest tests/bdd/test_password_reset.py
