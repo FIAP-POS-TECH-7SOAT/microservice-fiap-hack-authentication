@@ -51,17 +51,7 @@ jobs:
 
       # - name: Run BDD tests
       #   run: |
-      #     behave tests/bdd/features/create_user.feature
-
-      # - name: Verify coverage report exists
-      #   run: |
-      #     if [ -f coverage.xml ]; then
-      #       echo "Coverage file found at $(pwd)/coverage.xml"
-      #     else
-      #       echo "Coverage file not found!" >&2
-      #       exit 1
-      #     fi
-      #   working-directory: .
+      #     pytest tests/bdd/test_create_user.py && pytest tests/bdd/test_verify_email.py && pytest tests/bdd/test_auth_user.py && pytest tests/bdd/test_auth_verify.py && pytest tests/bdd/test_password_recover.py && pytest tests/bdd/test_password_reset.py
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
